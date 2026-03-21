@@ -1,6 +1,9 @@
 -----------------
 Why Do They Pit?
 -----------------
+
+[Live](https://tanvi1505.github.io/f1-fan-edition)
+
 (Better Understanding on Pitstops and Tyres for Beginner Formula 1 fans.)
 
 
