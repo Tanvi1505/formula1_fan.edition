@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 Fan Academy — Learn F1 From Scratch</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --red:#E8002D; --soft:#FF3355; --soft-bg:#2a0010;
+  --med:#FFD600; --med-bg:#2a2000;
+  --green:#39B54A; --green-bg:#0a2010;
+  --blue:#00AAFF; --blue-bg:#001a2a;
+  --purple:#AA44FF; --purple-bg:#1a0030;
+  --bg:#0C0C0E; --card:#14141A; --card2:#1C1C26;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.14);
+  --text:#F2F0EC; --muted:#7a7a8a;
+  --sans:'Syne',sans-serif; --mono:'Syne Mono',monospace;
+}
+html,body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;min-height:100vh;}
+
+/* HERO */
+.hero{
+  padding:64px 24px 52px;
+  max-width:860px;margin:0 auto;
+  text-align:center;
+}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:4px;
+  color:var(--red);margin-bottom:20px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.eyebrow-line{height:1px;width:40px;background:var(--red);opacity:0.5;}
+.hero h1{font-size:clamp(44px,8vw,88px);font-weight:800;line-height:0.92;letter-spacing:-3px;margin-bottom:22px;}
+.hero h1 em{color:var(--red);font-style:normal;}
+.hero-sub{font-size:18px;color:var(--muted);max-width:500px;margin:0 auto 36px;line-height:1.7;}
+.hero-sub strong{color:var(--text);}
+
+.start-btn{
+  display:inline-block;
+  font-family:var(--sans);font-size:16px;font-weight:700;
+  padding:14px 36px;border-radius:8px;
+  background:var(--red);color:#fff;text-decoration:none;
+  transition:opacity 0.15s, transform 0.15s;
+  letter-spacing:0.3px;
+}
+.start-btn:hover{opacity:0.87;transform:translateY(-2px);}
+
+/* CHAPTERS GRID */
+.chapters-wrap{max-width:860px;margin:0 auto;padding:0 24px 80px;}
+
+.section-label{
+  font-family:var(--mono);font-size:10px;letter-spacing:3px;
+  color:var(--muted);margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+.chapters-grid{display:flex;flex-direction:column;gap:10px;margin-bottom:48px;}
+
+/* CHAPTER CARD */
+.ch-card{
+  display:flex;align-items:stretch;
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  text-decoration:none;color:var(--text);
+  transition:border-color 0.2s, transform 0.2s;
+  overflow:hidden;
+  position:relative;
+}
+.ch-card:hover{border-color:var(--border2);transform:translateX(4px);}
+.ch-card.locked{opacity:0.45;pointer-events:none;}
+.ch-card.locked:hover{transform:none;}
+
+.ch-num{
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:13px;color:var(--muted);
+  width:64px;flex-shrink:0;
+  border-right:1px solid var(--border);
+  background:var(--card2);
+}
+.ch-card:hover .ch-num{color:var(--text);}
+
+.ch-body{flex:1;padding:20px 22px;}
+.ch-tag{
+  font-family:var(--mono);font-size:9px;letter-spacing:2px;
+  margin-bottom:6px;
+}
+.ch-title{font-size:20px;font-weight:700;line-height:1.2;margin-bottom:6px;}
+.ch-desc{font-size:14px;color:var(--muted);line-height:1.55;}
+
+.ch-arrow{
+  display:flex;align-items:center;padding:0 20px;
+  font-size:20px;color:var(--muted);flex-shrink:0;
+  transition:color 0.2s, transform 0.2s;
+}
+.ch-card:hover .ch-arrow{color:var(--text);transform:translateX(4px);}
+
+.ch-soon{
+  position:absolute;top:12px;right:12px;
+  font-family:var(--mono);font-size:8px;letter-spacing:2px;
+  padding:3px 8px;border-radius:3px;
+  background:var(--card2);color:var(--muted);border:1px solid var(--border);
+}
+
+/* COLOUR ACCENTS per chapter */
+.ch-card.c01{border-left:3px solid var(--red);}
+.ch-card.c01 .ch-tag{color:var(--red);}
+.ch-card.c02{border-left:3px solid var(--blue);}
+.ch-card.c02 .ch-tag{color:var(--blue);}
+.ch-card.c03{border-left:3px solid var(--med);}
+.ch-card.c03 .ch-tag{color:var(--med);}
+.ch-card.c04{border-left:3px solid var(--green);}
+.ch-card.c04 .ch-tag{color:var(--green);}
+.ch-card.c05{border-left:3px solid var(--purple);}
+.ch-card.c05 .ch-tag{color:var(--purple);}
+
+/* ABOUT STRIP */
+.about-strip{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:24px 28px;margin-bottom:48px;
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;
+}
+.about-item{text-align:center;}
+.about-num{font-family:var(--mono);font-size:28px;font-weight:700;color:var(--red);margin-bottom:4px;}
+.about-label{font-size:13px;color:var(--muted);line-height:1.4;}
+
+@media(max-width:600px){
+  .about-strip{grid-template-columns:1fr 1fr;gap:16px;}
+  .hero h1{letter-spacing:-2px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">
+    <div class="eyebrow-line"></div>
+    F1 FAN ACADEMY
+    <div class="eyebrow-line"></div>
+  </div>
+  <h1>Learn<br>F1 from<br><em>scratch.</em></h1>
+  <p class="hero-sub">Just started watching? Confused by what everyone's talking about? Each chapter explains <strong>one thing</strong>, simply, with no jargon.</p>
+  <a class="start-btn" href="01_the_2026_car.html">Start with Chapter 1 →</a>
+</div>
+
+<div class="chapters-wrap">
+
+  <div class="about-strip">
+    <div class="about-item">
+      <div class="about-num">5</div>
+      <div class="about-label">Chapters planned — more coming each race week</div>
+    </div>
+    <div class="about-item">
+      <div class="about-num">~8 min</div>
+      <div class="about-label">Average time per chapter — short, interactive, to the point</div>
+    </div>
+    <div class="about-item">
+      <div class="about-num">0</div>
+      <div class="about-label">Prior knowledge needed. Start knowing nothing. Leave knowing everything.</div>
+    </div>
+  </div>
+
+  <div class="section-label">CHAPTERS — START HERE</div>
+
+  <div class="chapters-grid">
+
+    <a class="ch-card c01" href="01_the_2026_car.html">
+      <div class="ch-num">01</div>
+      <div class="ch-body">
+        <div class="ch-tag">2026 RULES · ACTIVE AERO · NEW ENGINE</div>
+        <div class="ch-title">The 2026 F1 car</div>
+        <div class="ch-desc">Everything changed this year. New 50/50 hybrid engine, wings that move automatically, Overtake Mode replacing DRS. The biggest reset in F1 history — start here.</div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </a>
+
+    <a class="ch-card c02" href="02_why_do_they_pit.html">
+      <div class="ch-num">02</div>
+      <div class="ch-body">
+        <div class="ch-tag">TYRES · STRATEGY · PITSTOPS</div>
+        <div class="ch-title">Why do they pit?</div>
+        <div class="ch-desc">Soft, medium, hard, C1–C5, the undercut, 1-stop vs 2-stop, and the Safety Car wildcard. Everything about tyres and strategy.</div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </a>
+
+    <div class="ch-card c03 locked">
+      <div class="ch-soon">COMING SOON</div>
+      <div class="ch-num">03</div>
+      <div class="ch-body">
+        <div class="ch-tag">QUALIFYING · Q1 · Q2 · Q3</div>
+        <div class="ch-title">How qualifying works</div>
+        <div class="ch-desc">Why Saturday matters as much as Sunday. Who gets knocked out in Q1? What's a pole position? Why do drivers go out late for the final lap?</div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </div>
+
+    <div class="ch-card c04 locked">
+      <div class="ch-soon">COMING SOON</div>
+      <div class="ch-num">04</div>
+      <div class="ch-body">
+        <div class="ch-tag">POINTS · WDC · WCC</div>
+        <div class="ch-title">How the championship works</div>
+        <div class="ch-desc">25 points for a win, 18 for second... but what does that actually mean for the title fight? And what's the Constructors' Championship?</div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </div>
+
+    <div class="ch-card c05 locked">
+      <div class="ch-soon">COMING SOON</div>
+      <div class="ch-num">05</div>
+      <div class="ch-body">
+        <div class="ch-tag">FLAGS · MARSHALS · SAFETY</div>
+        <div class="ch-title">What every flag means</div>
+        <div class="ch-desc">Yellow, red, black, chequered, blue — each flag tells a completely different story. Never wonder what's happening on track again.</div>
+      </div>
+      <div class="ch-arrow">→</div>
+    </div>
+
+  </div>
+
+  <div class="section-label">ABOUT THIS SITE</div>
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:24px 28px;">
+    <div style="font-size:15px;color:var(--muted);line-height:1.8;max-width:580px;">
+      F1 Fan Academy is built for people who just started watching Formula 1 and want to actually understand what's happening — not just nod along. No Wikipedia walls. No jargon-first explanations. Just one thing at a time, explained well.<br><br>
+      New chapters drop regularly. Bookmark this page and come back.
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
