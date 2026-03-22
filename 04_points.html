@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Championship — F1 Fan Academy</title>
+<style>
+/* ============================================================
+   F1 FAN ACADEMY — SHARED STYLESHEET
+   Light / Dark mode, Jargon tooltips, Base components
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Syne+Mono&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── TOKENS ── */
+:root {
+  --red: #E8002D;
+  --soft: #FF3355; --soft-bg: #ffeaee;
+  --med: #D4A000; --med-bg: #fffbe6;
+  --green: #1a8c3a; --green-bg: #edfaf2;
+  --blue: #0077cc; --blue-bg: #e8f4ff;
+  --purple: #7c3aed; --purple-bg: #f5f0ff;
+  --orange: #c45000; --orange-bg: #fff3eb;
+
+  --bg: #f5f4f0;
+  --bg2: #eeede8;
+  --card: #ffffff;
+  --card2: #f8f7f3;
+  --border: rgba(0,0,0,0.08);
+  --border2: rgba(0,0,0,0.16);
+  --text: #1a1a1a;
+  --muted: #6b6b6b;
+  --muted2: #9a9a9a;
+
+  --sans: 'Syne', sans-serif;
+  --mono: 'Syne Mono', monospace;
+  --radius: 10px;
+  --radius-lg: 14px;
+}
+
+[data-theme="dark"] {
+  --soft-bg: #2a0010; --med-bg: #2a2000;
+  --green-bg: #0a2010; --blue-bg: #001a2a;
+  --purple-bg: #1a0030; --orange-bg: #1e0d00;
+
+  --bg: #0C0C0E;
+  --bg2: #141418;
+  --card: #14141A;
+  --card2: #1C1C26;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.14);
+  --text: #F2F0EC;
+  --muted: #8a8a9a;
+  --muted2: #5a5a6a;
+
+  --soft: #FF3355; --med: #FFD600;
+  --green: #39B54A; --blue: #00AAFF;
+  --purple: #AA44FF; --orange: #FF8C42;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background 0.25s, color 0.25s;
+}
+
+/* ── TOP NAV ── */
+.topnav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 50px;
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; z-index: 200;
+}
+.nav-back {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 1px;
+  color: var(--muted); text-decoration: none;
+  display: flex; align-items: center; gap: 6px;
+  transition: color 0.15s;
+}
+.nav-back:hover { color: var(--text); }
+.nav-center { font-family: var(--mono); font-size: 10px; letter-spacing: 2px; color: var(--muted2); }
+.nav-right { display: flex; align-items: center; gap: 10px; }
+.nav-badge {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+  padding: 3px 8px; border-radius: 4px;
+  background: rgba(232,0,45,0.1); color: var(--red);
+  border: 1px solid rgba(232,0,45,0.25);
+}
+.theme-toggle {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--card2);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: var(--muted);
+  transition: all 0.15s;
+}
+.theme-toggle:hover { color: var(--text); border-color: var(--border2); }
+
+/* ── HERO ── */
+.hero { padding: 52px 24px 36px; max-width: 800px; margin: 0 auto; }
+.hero-eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  color: var(--red); margin-bottom: 14px; text-transform: uppercase;
+}
+.hero h1 {
+  font-size: clamp(38px, 7vw, 72px); font-weight: 800;
+  line-height: 0.95; margin-bottom: 18px; letter-spacing: -2px;
+}
+.hero h1 em { color: var(--red); font-style: normal; }
+.hero-sub {
+  font-size: 17px; color: var(--muted); max-width: 560px; line-height: 1.65; margin-bottom: 28px;
+}
+.hero-sub strong { color: var(--text); }
+
+/* ── PROGRESS ── */
+.progress { display: flex; align-items: center; gap: 8px; margin-bottom: 36px; }
+.prog-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--border2); cursor: pointer; transition: all 0.3s;
+}
+.prog-dot.active { background: var(--red); width: 28px; border-radius: 4px; }
+.prog-dot.done { background: var(--muted2); }
+
+/* ── CHAPTERS ── */
+.chapter { display: none; animation: fadeUp 0.35s ease forwards; }
+.chapter.active { display: block; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+.chapter-inner { max-width: 800px; margin: 0 auto; padding: 0 24px 70px; }
+
+/* ── TYPOGRAPHY ── */
+.big-q {
+  font-size: clamp(21px, 3.5vw, 34px); font-weight: 700;
+  line-height: 1.2; margin-bottom: 14px; letter-spacing: -0.5px;
+}
+.answer-text {
+  font-size: 17px; color: var(--muted); max-width: 620px; line-height: 1.7; margin-bottom: 28px;
+}
+.answer-text strong { color: var(--text); }
+
+/* ── CALLOUT ── */
+.callout {
+  display: flex; gap: 14px;
+  background: var(--card2); border-left: 3px solid var(--red);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 15px 18px; margin-bottom: 22px;
+}
+.callout.green  { border-left-color: var(--green); }
+.callout.blue   { border-left-color: var(--blue); }
+.callout.yellow { border-left-color: var(--med); }
+.callout.purple { border-left-color: var(--purple); }
+.callout.orange { border-left-color: var(--orange); }
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.callout-text { font-size: 14px; color: var(--muted); line-height: 1.7; }
+.callout-text strong { color: var(--text); }
+
+/* ── FUN FACT ── */
+.fun-fact {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px 22px;
+  margin-bottom: 22px; font-size: 15px; line-height: 1.6; color: var(--muted);
+}
+.fun-fact strong { color: var(--text); }
+.fun-fact-label {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+  color: var(--red); margin-bottom: 8px; display: block;
+}
+
+/* ── CARDS ── */
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 28px; }
+.f-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 18px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+.f-card:hover { transform: translateY(-2px); border-color: var(--border2); }
+.f-card-icon { font-size: 26px; margin-bottom: 8px; }
+.f-card-title { font-weight: 700; font-size: 16px; margin-bottom: 5px; }
+.f-card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.f-card-tag {
+  display: inline-block; font-family: var(--mono); font-size: 8px;
+  padding: 3px 7px; border-radius: 3px; margin-top: 8px; letter-spacing: 1px;
+}
+
+/* ── STAT ROW ── */
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 26px; }
+.stat-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.stat-num { font-family: var(--mono); font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.stat-label { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+/* ── COMPARE ── */
+.compare-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 22px; }
+.compare-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.compare-era { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; margin-bottom: 10px; color: var(--muted2); }
+.compare-era.new { color: var(--red); }
+.compare-item { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: var(--muted); margin-bottom: 7px; line-height: 1.4; }
+.compare-item strong { color: var(--text); }
+.ci-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 6px; }
+
+/* ── TIMELINE ── */
+.timeline { display: flex; flex-direction: column; gap: 0; margin-bottom: 26px; }
+.tl-item { display: flex; gap: 16px; padding: 0 0 22px; }
+.tl-line { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.tl-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--red); border: 2px solid var(--red); flex-shrink: 0; margin-top: 4px; }
+.tl-dot.muted { background: var(--muted2); border-color: var(--muted2); }
+.tl-stem { flex: 1; width: 1px; background: var(--border2); margin: 4px 0; }
+.tl-year { font-family: var(--mono); font-size: 11px; color: var(--red); font-weight: 600; margin-bottom: 4px; }
+.tl-year.muted { color: var(--muted2); }
+.tl-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+.tl-body { font-size: 14px; color: var(--muted); line-height: 1.6; }
+.tl-body strong { color: var(--text); }
+
+/* ── RACE STRIP ── */
+.race-strip-wrap { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px 22px; margin-bottom: 12px; }
+.strip-label { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--muted2); margin-bottom: 10px; }
+.race-strip { display: flex; height: 38px; border-radius: 6px; overflow: hidden; gap: 3px; margin-bottom: 8px; }
+.stint { display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; font-weight: 600; border-radius: 4px; overflow: hidden; }
+.stint.soft-s { background: var(--soft-bg); color: var(--soft); border: 1px solid rgba(255,51,85,0.25); }
+.stint.med-s  { background: var(--med-bg);  color: var(--med);  border: 1px solid rgba(212,160,0,0.25); }
+.stint.hard-s { background: var(--card2);   color: var(--muted); border: 1px solid var(--border2); }
+.stint.pit-m  { width: 14px; flex-shrink: 0; background: rgba(232,0,45,0.1); color: var(--red); font-size: 7px; border: 1px solid rgba(232,0,45,0.2); writing-mode: vertical-lr; letter-spacing: 1px; }
+.strip-lap-nums { display: flex; justify-content: space-between; font-family: var(--mono); font-size: 9px; color: var(--muted2); }
+.strip-note { font-size: 13px; color: var(--muted); margin-top: 8px; line-height: 1.5; }
+.strip-note strong { color: var(--text); }
+
+/* ── QUIZ ── */
+.quiz-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 16px; }
+.quiz-q { font-size: 18px; font-weight: 700; margin-bottom: 16px; line-height: 1.3; }
+.quiz-opts { display: flex; flex-direction: column; gap: 9px; margin-bottom: 12px; }
+.quiz-opt {
+  padding: 12px 16px; border: 1px solid var(--border);
+  border-radius: var(--radius); cursor: pointer; font-size: 15px;
+  background: var(--card2); transition: all 0.15s;
+  display: flex; align-items: center; gap: 12px; color: var(--text);
+}
+.quiz-opt:hover { border-color: var(--border2); }
+.quiz-opt.correct { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.quiz-opt.wrong   { border-color: var(--soft);  background: var(--soft-bg);  color: var(--soft); }
+.quiz-opt.disabled { cursor: default; }
+.opt-letter {
+  font-family: var(--mono); font-size: 11px; width: 22px; height: 22px;
+  border-radius: 4px; display: flex; align-items: center; justify-content: center;
+  background: var(--border); flex-shrink: 0;
+}
+.quiz-feedback { font-size: 14px; padding: 13px 16px; border-radius: var(--radius); display: none; line-height: 1.6; }
+.quiz-feedback.show { display: block; }
+.quiz-feedback.good { background: var(--green-bg); color: var(--green); border: 1px solid rgba(57,181,74,0.25); }
+.quiz-feedback.bad  { background: var(--soft-bg);  color: var(--soft);  border: 1px solid rgba(255,51,85,0.25); }
+
+/* ── NAV BUTTONS ── */
+.nav-row { display: flex; gap: 12px; align-items: center; margin-top: 40px; flex-wrap: wrap; }
+.btn {
+  font-family: var(--sans); font-size: 15px; font-weight: 700;
+  padding: 12px 24px; border-radius: var(--radius); border: none;
+  cursor: pointer; transition: all 0.15s; letter-spacing: 0.3px;
+}
+.btn-primary { background: var(--red); color: #fff; }
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-secondary { background: var(--card2); color: var(--muted); border: 1px solid var(--border2); }
+.btn-secondary:hover { color: var(--text); }
+.btn:disabled { opacity: 0.3; cursor: default; transform: none !important; }
+
+/* ── NEXT CHAPTER CARD ── */
+.next-chapter {
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px 24px;
+  text-decoration: none; color: var(--text);
+  transition: border-color 0.2s, transform 0.2s; margin-top: 16px;
+}
+.next-chapter:hover { border-color: var(--border2); transform: translateX(4px); }
+.nc-label { font-family: var(--mono); font-size: 9px; letter-spacing: 2px; color: var(--muted2); margin-bottom: 4px; }
+.nc-title { font-size: 19px; font-weight: 700; }
+.nc-arrow { font-size: 22px; color: var(--muted2); flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   JARGON TOOLTIP SYSTEM
+   ══════════════════════════════════════════ */
+.jargon {
+  color: var(--red);
+  border-bottom: 1px dashed var(--red);
+  cursor: pointer;
+  font-weight: 600;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.jargon:hover { opacity: 0.75; }
+
+/* Overlay backdrop */
+.jargon-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  z-index: 990;
+  background: transparent;
+}
+.jargon-overlay.open { display: block; }
+
+/* Side panel */
+.jargon-panel {
+  position: fixed;
+  top: 50%; right: -360px;
+  transform: translateY(-50%);
+  width: 320px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg) 0 0 var(--radius-lg);
+  padding: 24px;
+  z-index: 1000;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+  transition: right 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+.jargon-panel.open { right: 0; }
+
+/* Curved arrow decoration */
+.jargon-panel::before {
+  content: '';
+  position: absolute;
+  left: -22px; top: 50%;
+  transform: translateY(-50%);
+  width: 22px; height: 44px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  border-right: none;
+  border-radius: 22px 0 0 22px;
+}
+
+.jargon-close {
+  position: absolute; top: 14px; right: 14px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--card2); border: 1px solid var(--border);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: var(--muted); transition: all 0.15s; font-family: var(--mono);
+}
+.jargon-close:hover { background: var(--border); color: var(--text); }
+
+.jargon-word {
+  font-family: var(--mono); font-size: 9px; letter-spacing: 2px;
+  color: var(--red); margin-bottom: 8px; text-transform: uppercase;
+}
+.jargon-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; line-height: 1.2; }
+.jargon-body { font-size: 14px; color: var(--muted); line-height: 1.7; }
+.jargon-body strong { color: var(--text); }
+.jargon-arrow {
+  position: absolute;
+  left: -44px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px; color: var(--red);
+  opacity: 0;
+  transition: opacity 0.3s 0.2s;
+}
+.jargon-panel.open .jargon-arrow { opacity: 1; }
+
+@media (max-width: 600px) {
+  .jargon-panel {
+    top: auto; right: 0; bottom: -100%;
+    width: 100%; border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    transform: none;
+    transition: bottom 0.35s cubic-bezier(0.34, 1.2, 0.64, 1);
+    max-height: 70vh; overflow-y: auto;
+  }
+  .jargon-panel::before { display: none; }
+  .jargon-panel.open { bottom: 0; right: 0; }
+  .jargon-arrow { display: none; }
+  .compare-row { grid-template-columns: 1fr; }
+}
+
+/* ── SECTION DIVIDER ── */
+.section-label {
+  font-family: var(--mono); font-size: 10px; letter-spacing: 3px;
+  color: var(--muted2); margin-bottom: 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+
+</style>
+</head>
+<body>
+
+<div class="topnav">
+  <a class="nav-back" href="index.html">← F1 Fan Academy</a>
+  <div class="nav-center">CHAPTER 04</div>
+  <div class="nav-right">
+    <div class="nav-badge">POINTS & TITLES</div>
+    <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()">◑</button>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">F1 FAN ACADEMY · CHAPTER 04</div>
+  <h1>How does the<br><em>championship</em><br>work?</h1>
+  <p class="hero-sub">Points, titles, two championships running at once. Here's the full scoring system — and why a team can win the title even when their driver doesn't.</p>
+  <div class="progress" id="progress"></div>
+</div>
+
+<!-- CH 0: TWO CHAMPIONSHIPS -->
+<div class="chapter active" id="ch-0">
+<div class="chapter-inner">
+  <div class="big-q">There are actually two championships.</div>
+  <p class="answer-text">
+    Every race weekend, points are being scored in two completely separate competitions running simultaneously — one for individual drivers, one for teams.
+  </p>
+
+  <div class="compare-row">
+    <div class="compare-card" style="border-top:3px solid var(--red)">
+      <div class="compare-era new">WORLD DRIVERS' CHAMPIONSHIP</div>
+      <div class="compare-item"><div class="ci-dot" style="background:var(--red)"></div><div>Points earned by each <strong>individual driver</strong></div></div>
+      <div class="compare-item"><div class="ci-dot" style="background:var(--red)"></div><div>The driver with the most points at season end wins the <span class="jargon" onclick="openJargon('wdc')">WDC</span></div></div>
+      <div class="compare-item"><div class="ci-dot" style="background:var(--red)"></div><div>The most famous title in motorsport</div></div>
+      <div class="compare-item"><div class="ci-dot" style="background:var(--red)"></div><div>Lando Norris won it in 2025</div></div>
+    </div>
+    <div class="compare-card" style="border-top:3px solid var(--blue)">
+      <div class="compare-era" style="color:var(--blue)">CONSTRUCTORS' CHAMPIONSHIP</div>
+      <div class="compare-item"><div class="ci-dot" style="background:var(--blue)"></div><div>Points from <strong>both team drivers</strong> combined</div></div>
+      <div class="compare-item"><div class="ci-dot" style="background:var(--blue)"></div><div>The team with the most combined points wins the <span class="jargon" onclick="openJargon('constructors')">WCC</span></div></div>
+      <div class="compare-item"><div class="ci-dot" style="background:var(--blue)"></div><div>Worth hundreds of millions in prize money</div></div>
+      <div class="compare-item"><div class="ci-dot" style="background:var(--blue)"></div><div>McLaren won it in 2025</div></div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-icon"></div>
+    <div class="callout-text"><strong>A team can win the Constructors' title even if neither of their drivers wins the Drivers' title.</strong> If both Ferrari drivers consistently finish P2 and P3 while one Red Bull driver wins but the other crashes, Ferrari could accumulate more team points despite not having the individual champion.</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-secondary" disabled>← Back</button>
+    <button class="btn btn-primary" onclick="goTo(1, TOTAL)">Next: The points system →</button>
+  </div>
+</div>
+</div>
+
+<!-- CH 1: POINTS -->
+<div class="chapter" id="ch-1">
+<div class="chapter-inner">
+  <div class="big-q">How many points does each position earn?</div>
+  <p class="answer-text">
+    Points are awarded to the top 10 finishers in every race. There is also one bonus point available — for the driver who sets the fastest lap, but only if they finish in the top 10.
+  </p>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:22px;overflow-x:auto;">
+    <div class="strip-label" style="margin-bottom:14px;">POINTS PER FINISHING POSITION</div>
+    <div style="display:flex;flex-direction:column;gap:6px;">
+      <div id="pts-bars"></div>
+    </div>
+  </div>
+
+  <div class="fun-fact">
+    <div class="fun-fact-label">THE FASTEST LAP POINT</div>
+    One bonus point is awarded for the fastest lap of the race — but only if the driver finishing in the top 10 sets it. Teams sometimes pit a driver in the closing laps specifically to put them on fresh soft tyres and chase the fastest lap point. It sounds small, but in a tight championship, 1 point can be the difference.
+  </div>
+
+  <div class="callout yellow">
+    <div class="callout-icon"></div>
+    <div class="callout-text">A win is worth <strong>25 points</strong>. That means if you win every single race, you'd score 25 × 24 = 600 points in a 24-race season (before fastest lap bonuses). In reality, no driver has ever done that — reliability, crashes and competition always intervene.</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(0, TOTAL)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(2, TOTAL)">Next: Sprint races →</button>
+  </div>
+</div>
+</div>
+
+<!-- CH 2: SPRINTS -->
+<div class="chapter" id="ch-2">
+<div class="chapter-inner">
+  <div class="big-q">Sprint races — bonus points on Saturdays</div>
+  <p class="answer-text">
+    At 6 race weekends per season, there's a <span class="jargon" onclick="openJargon('sprint race')">sprint race</span> on Saturday — a shorter race of roughly 100km (about 30% of a full Grand Prix). Points are on offer, no mandatory pit stop.
+  </p>
+
+  <div class="compare-row">
+    <div class="compare-card" style="border-top:3px solid var(--red)">
+      <div class="compare-era new">FULL RACE POINTS (TOP 10)</div>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:2;">
+        P1: 25 &nbsp; P2: 18 &nbsp; P3: 15<br>
+        P4: 12 &nbsp; P5: 10 &nbsp; P6: 8<br>
+        P7: 6 &nbsp;&nbsp; P8: 4 &nbsp;&nbsp; P9: 2<br>
+        P10: 1
+      </div>
+    </div>
+    <div class="compare-card" style="border-top:3px solid var(--orange)">
+      <div class="compare-era" style="color:var(--orange)">SPRINT RACE POINTS (TOP 8)</div>
+      <div style="font-family:var(--mono);font-size:13px;color:var(--muted);line-height:2;">
+        P1: 8 &nbsp; P2: 7 &nbsp; P3: 6<br>
+        P4: 5 &nbsp; P5: 4 &nbsp; P6: 3<br>
+        P7: 2 &nbsp; P8: 1
+      </div>
+    </div>
+  </div>
+
+  <div class="callout green">
+    <div class="callout-icon"></div>
+    <div class="callout-text"><strong>Sprint weekends have a different structure:</strong> Sprint Qualifying on Friday afternoon sets the sprint grid. The sprint race runs Saturday morning. Then normal qualifying sets the Sunday race grid. Two qualifying sessions, two races in one weekend.</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(1, TOTAL)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(3, TOTAL)">Next: How the title is decided →</button>
+  </div>
+</div>
+</div>
+
+<!-- CH 3: TITLE FIGHT -->
+<div class="chapter" id="ch-3">
+<div class="chapter-inner">
+  <div class="big-q">How is the championship actually decided?</div>
+  <p class="answer-text">
+    It's cumulative. Every race, every sprint race, every fastest lap — points accumulate across the entire season. The driver (and team) with the most points after the final race wins.
+  </p>
+
+  <div class="callout">
+    <div class="callout-icon"></div>
+    <div class="callout-text"><strong>Consistency beats occasional brilliance.</strong> A driver who finishes P3 every race will beat a driver who wins 6 races but retires from 8. The championship rewards reliability as much as speed. This is why protecting your car in a battle — accepting a slower position rather than risking a crash — is often the smarter call.</div>
+  </div>
+
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;margin-bottom:22px;">
+    <div class="strip-label">EXAMPLE: 5-RACE TITLE FIGHT</div>
+    <div id="title-sim" style="overflow-x:auto;">
+      <table style="width:100%;border-collapse:collapse;min-width:400px;">
+        <thead>
+          <tr>
+            <th style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted2);text-align:left;padding:8px;border-bottom:1px solid var(--border2);">DRIVER</th>
+            <th style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted2);text-align:center;padding:8px;border-bottom:1px solid var(--border2);">R1</th>
+            <th style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted2);text-align:center;padding:8px;border-bottom:1px solid var(--border2);">R2</th>
+            <th style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted2);text-align:center;padding:8px;border-bottom:1px solid var(--border2);">R3</th>
+            <th style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted2);text-align:center;padding:8px;border-bottom:1px solid var(--border2);">R4</th>
+            <th style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted2);text-align:center;padding:8px;border-bottom:1px solid var(--border2);">R5</th>
+            <th style="font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--muted2);text-align:right;padding:8px;border-bottom:1px solid var(--border2);">TOTAL</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:10px 8px;font-weight:700;border-bottom:1px solid var(--border);color:var(--red)">Driver A</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;">25</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;color:var(--muted2)">0 DNF</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;">25</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;color:var(--muted2)">0 DNF</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;">25</td>
+            <td style="padding:10px 8px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);font-weight:700;color:var(--red)">75</td>
+          </tr>
+          <tr>
+            <td style="padding:10px 8px;font-weight:700;border-bottom:1px solid var(--border);color:var(--blue)">Driver B</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;">15</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;">18</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;">18</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;">15</td>
+            <td style="padding:10px 8px;text-align:center;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:13px;">18</td>
+            <td style="padding:10px 8px;text-align:right;border-bottom:1px solid var(--border);font-family:var(--mono);font-weight:700;color:var(--blue)">84</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="font-size:13px;color:var(--muted);margin-top:12px;padding:0 8px;">Driver A won 3 races. Driver B won zero. <strong style="color:var(--text)">Driver B wins the championship</strong> — by 9 points. Consistency wins.</div>
+    </div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(2, TOTAL)">← Back</button>
+    <button class="btn btn-primary" onclick="goTo(4, TOTAL)">Test yourself →</button>
+  </div>
+</div>
+</div>
+
+<!-- CH 4: QUIZ -->
+<div class="chapter" id="ch-4">
+<div class="chapter-inner">
+  <div class="big-q">Quick quiz</div>
+  <p class="answer-text">Three questions on points and championships.</p>
+
+  <div class="quiz-card" id="q1-card">
+    <div class="quiz-q">Q1. Ferrari's two drivers finish P1 and P4. McLaren's two drivers finish P2 and P3. Who scores more Constructors' points?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="quiz.answer(1,'a',3)" id="q1-a"><span class="opt-letter">A</span> Ferrari — they won the race, which counts more</div>
+      <div class="quiz-opt" onclick="quiz.answer(1,'b',3)" id="q1-b"><span class="opt-letter">B</span> McLaren — P2+P3 gives 18+15=33 pts, vs Ferrari's P1+P4 of 25+12=37 pts... actually Ferrari</div>
+      <div class="quiz-opt" onclick="quiz.answer(1,'c',3)" id="q1-c"><span class="opt-letter">C</span> Ferrari — 25+12=37 points beats McLaren's 18+15=33</div>
+    </div>
+    <div class="quiz-feedback good" id="q1-fb-good">Yes — Ferrari scores 37 combined (25+12) vs McLaren's 33 (18+15). A race win has huge value in both championships. Even with two drivers on the podium, McLaren falls behind because P1 scores so much more than P2.</div>
+    <div class="quiz-feedback bad" id="q1-fb-bad">Ferrari: P1 = 25, P4 = 12, total = 37. McLaren: P2 = 18, P3 = 15, total = 33. Ferrari leads by 4 points despite McLaren having two podium finishes. The race win carries enormous weight.</div>
+  </div>
+
+  <div class="quiz-card" id="q2-card" style="opacity:0.4;pointer-events:none;">
+    <div class="quiz-q">Q2. How many points does a sprint race winner receive?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="quiz.answer(2,'a',3)" id="q2-a"><span class="opt-letter">A</span> 25 — same as a full Grand Prix win</div>
+      <div class="quiz-opt" onclick="quiz.answer(2,'b',3)" id="q2-b"><span class="opt-letter">B</span> 8 — sprint races give out much smaller points</div>
+      <div class="quiz-opt" onclick="quiz.answer(2,'c',3)" id="q2-c"><span class="opt-letter">C</span> 15 — roughly half a normal race win</div>
+    </div>
+    <div class="quiz-feedback good" id="q2-fb-good">Correct — 8 points for a sprint race win. Points go down to P8 (1 point). Sprint races are shorter and less prestigious, so the points are much smaller — but they still count toward both championships.</div>
+    <div class="quiz-feedback bad" id="q2-fb-bad">Sprint race winner gets 8 points — much less than a full Grand Prix win (25). Points go to P8 (1 point minimum). Small numbers, but they can still swing a tight championship fight.</div>
+  </div>
+
+  <div class="quiz-card" id="q3-card" style="opacity:0.4;pointer-events:none;">
+    <div class="quiz-q">Q3. Driver A has 340 points with 2 races left. Driver B has 320 points. Can Driver B still win the title?</div>
+    <div class="quiz-opts">
+      <div class="quiz-opt" onclick="quiz.answer(3,'a',3)" id="q3-a"><span class="opt-letter">A</span> No — Driver A needs to lose 20 points which isn't possible</div>
+      <div class="quiz-opt" onclick="quiz.answer(3,'b',3)" id="q3-b"><span class="opt-letter">B</span> Yes — 2 wins + 2 fastest laps = 52 pts max available. B needs 21 more than A, so if B wins both and A scores nothing, B wins</div>
+      <div class="quiz-opt" onclick="quiz.answer(3,'c',3)" id="q3-c"><span class="opt-letter">C</span> No — once you're behind with 2 races left it's mathematically impossible</div>
+    </div>
+    <div class="quiz-feedback good" id="q3-fb-good">Correct. Driver B can score up to 52 points (2×26 including fastest lap). If B scores 52 and A scores 0, B ends on 372 vs A's 340. It's unlikely but mathematically alive. This is why teams talk about "keeping the championship alive."</div>
+    <div class="quiz-feedback bad" id="q3-fb-bad">It's still mathematically possible. 2 races × 26 points max (25+1 fastest lap) = 52 available. B is 20 behind. If B takes maximum points and A scores very little, B can overturn it. This exact scenario plays out nearly every season.</div>
+  </div>
+
+  <div class="nav-row">
+    <button class="btn btn-secondary" onclick="goTo(3, TOTAL)">← Back</button>
+    <button class="btn btn-primary" id="finish-btn" disabled onclick="goTo(5, TOTAL)">See summary →</button>
+  </div>
+</div>
+</div>
+
+<!-- CH 5: SUMMARY -->
+<div class="chapter" id="ch-5">
+<div class="chapter-inner">
+  <div class="big-q">You get the championship now.</div>
+
+  <div class="stat-row">
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--red)">25</div>
+      <div class="stat-label">Points for a race win. P10 gets 1. Top 10 only.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--blue)">+1</div>
+      <div class="stat-label">Bonus point for fastest lap — only if you finish in top 10.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--green)">8</div>
+      <div class="stat-label">Points for a sprint race win. Goes to top 8 finishers.</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" style="color:var(--orange)">2</div>
+      <div class="stat-label">Championships per season — one for drivers, one for teams.</div>
+    </div>
+  </div>
+
+  <div class="callout yellow">
+    <div class="callout-icon"></div>
+    <div class="callout-text"><strong>Watch for this during the season:</strong> when the commentator says "he needs to take points off his championship rival," that means it's not enough to just score — you need to score <em>more</em> than the specific driver ahead of you. If you're P3 and your rival is P5, you're gaining on them. If you're both P2 and P3, the gap stays the same.</div>
+  </div>
+
+  <a class="next-chapter" href="05_flags.html">
+    <div><div class="nc-label">CHAPTER 05</div><div class="nc-title">What every flag means</div></div>
+    <div class="nc-arrow">→</div>
+  </a>
+  <div style="margin-top:10px;">
+    <button class="btn btn-secondary" onclick="goTo(0,TOTAL);quiz.reset(3);" style="width:100%;text-align:center;">Start this chapter over</button>
+  </div>
+</div>
+</div>
+
+<!-- JARGON PANEL -->
+<div class="jargon-overlay" id="jargon-overlay" onclick="closeJargon()"></div>
+<div class="jargon-panel" id="jargon-panel">
+  <button class="jargon-close" onclick="closeJargon()">✕</button>
+  <div class="jargon-arrow">↩</div>
+  <div class="jargon-word" id="jargon-word"></div>
+  <div class="jargon-title" id="jargon-title"></div>
+  <div class="jargon-body" id="jargon-body"></div>
+</div>
+
+<script>
+/* ============================================================
+   F1 FAN ACADEMY — SHARED JS
+   Jargon tooltip system + light/dark mode
+   ============================================================ */
+
+/* ── THEME ── */
+(function() {
+  const saved = localStorage.getItem('f1-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', saved);
+})();
+
+function toggleTheme() {
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('f1-theme', next);
+  const btn = document.getElementById('theme-toggle');
+  if (btn) btn.textContent = next === 'dark' ? '☀' : '◑';
+}
+
+function initThemeBtn() {
+  const btn = document.getElementById('theme-toggle');
+  if (!btn) return;
+  const current = document.documentElement.getAttribute('data-theme');
+  btn.textContent = current === 'dark' ? '☀' : '◑';
+}
+
+/* ── JARGON TOOLTIP SYSTEM ── */
+const jargonDefs = {
+  porpoising: {
+    title: 'Porpoising',
+    body: 'A violent bouncing motion where the car rapidly rises and falls at high speed. Happened a lot in 2022 when F1 introduced ground-effect cars. The floor generates suction that pulls the car down — but if it gets too close to the ground, that suction breaks and the car bounces back up. Repeat at 300km/h. Drivers described it as "painful."'
+  },
+  downforce: {
+    title: 'Downforce',
+    body: '<strong>Aerodynamic force pushing the car into the ground.</strong> Unlike a plane wing (which generates lift), an F1 car\'s wings are flipped to push down. More downforce = more grip in corners = faster cornering speeds. The trade-off: more downforce also means more drag, which slows the car on straights.'
+  },
+  drag: {
+    title: 'Drag',
+    body: '<strong>Air resistance slowing the car down.</strong> Every shape moving through air creates drag. F1 engineers spend thousands of hours reducing drag on straights, while also needing downforce (which creates drag) for corners. The whole game is finding the right balance for each circuit.'
+  },
+  'ground effect': {
+    title: 'Ground Effect',
+    body: '<strong>Using the floor of the car to generate downforce.</strong> Shaped tunnels under the car force air to accelerate — fast-moving air has lower pressure (Bernoulli\'s principle), which sucks the car toward the road. Much more efficient than wings. Banned in the 1980s after accidents. Returned in 2022.'
+  },
+  'dirty air': {
+    title: 'Dirty Air',
+    body: '<strong>Turbulent, disrupted airflow coming off the car ahead.</strong> A leading car\'s wings and body churn up the air behind it. Following cars lose downforce because their wings don\'t get clean airflow. This is why overtaking was so hard before 2022 — you\'d lose grip the moment you got close.'
+  },
+  'ers': {
+    title: 'ERS — Energy Recovery System',
+    body: '<strong>The hybrid system that harvests and deploys electrical energy.</strong> When the driver brakes or lifts off the throttle, the car captures kinetic energy and stores it as electricity in a battery. That electricity can then be deployed as extra power — either automatically or via the driver\'s controls. In 2026, the system is twice as powerful as before.'
+  },
+  'drs': {
+    title: 'DRS — Drag Reduction System',
+    body: '<strong>A flap on the rear wing that opened to reduce drag on straights.</strong> Used from 2011 to 2025. Only available if you were within 1 second of the car ahead at a detection point. Opening the DRS flap reduced drag and boosted top speed by roughly 10–12 km/h. Replaced in 2026 by Active Aero, which works for everyone.'
+  },
+  'active aero': {
+    title: 'Active Aero',
+    body: '<strong>Wings that automatically adjust their angle depending on where the car is on track.</strong> In corners — wings close, maximum downforce. On straights — wings flatten out, minimum drag. Available to every driver on every lap in 2026, unlike DRS which required being within 1 second of the car ahead.'
+  },
+  'undercut': {
+    title: 'The Undercut',
+    body: '<strong>Pitting before your rival to gain an advantage through tyre pace.</strong> You pit one lap early, come out on fresh tyres and start lapping significantly faster. By the time your rival pits, you\'ve recovered the time lost in the pit stop — and emerge ahead of them. A pitstop as an overtaking move.'
+  },
+  'overcut': {
+    title: 'The Overcut',
+    body: '<strong>Staying out longer than your rival to gain track position.</strong> The opposite of an undercut. You stay on old tyres while they pit, then pit yourself later. Works when the car ahead would lose time in traffic after their stop, or when your tyres can genuinely hold on.'
+  },
+  'parc ferme': {
+    title: 'Parc Fermé',
+    body: '<strong>A controlled area where cars must remain untouched from qualifying to the race start.</strong> After qualifying ends, teams cannot make significant setup changes to the car. This means the car that was fastest in qualifying has to start the race in the same configuration. Originally a French motor racing term meaning "closed park."'
+  },
+  'safety car': {
+    title: 'Safety Car',
+    body: '<strong>A road car that leads the F1 field at reduced speed after an incident.</strong> When there\'s a crash, debris or dangerous conditions, the Safety Car (usually a Mercedes AMG) comes out and all F1 cars must follow it in single file at reduced speed. Overtaking is forbidden. Gaps between cars disappear — creating chaos for strategy.'
+  },
+  'virtual safety car': {
+    title: 'Virtual Safety Car (VSC)',
+    body: '<strong>A speed-limit mode triggered without deploying the physical Safety Car.</strong> All drivers must slow to a minimum lap time (about 30% slower than normal). Unlike a full Safety Car, gaps between cars are maintained. Less dramatic, but still a strategy opportunity — pitting under VSC loses less time than a normal pit.'
+  },
+  'pole position': {
+    title: 'Pole Position',
+    body: '<strong>First place on the starting grid, earned by setting the fastest qualifying lap.</strong> The driver who goes quickest in Q3 starts at the front. Pole gives a huge advantage — clean air ahead, no traffic. Historically, winning from pole happens roughly 40% of the time in F1.'
+  },
+  'pit wall': {
+    title: 'Pit Wall',
+    body: '<strong>Where the team\'s strategy engineers and senior staff watch the race.</strong> The pit wall is a raised platform overlooking the pit lane. The team principal, head of strategy, race engineers and data analysts all sit here making real-time decisions. When you hear "box box box" over the radio — it came from here.'
+  },
+  'banking': {
+    title: 'Banking / Banked Corner',
+    body: '<strong>A corner where the track surface is angled inward (tilted).</strong> Like the inside of a bowl. Banking helps cars corner faster because gravity assists the centripetal force. Monza\'s Parabolica and NASCAR ovals are famous for high banking. F1 rarely uses extreme banking.'
+  },
+  'traction': {
+    title: 'Traction',
+    body: '<strong>The grip available when accelerating out of a corner.</strong> If a car has poor traction, the rear wheels spin when the driver gets on the throttle — the car slides instead of accelerating. Tyre temperature, compound choice, and car setup all affect traction. Cold or worn tyres = poor traction.'
+  },
+  'torque': {
+    title: 'Torque',
+    body: '<strong>Rotational force — the engine\'s ability to accelerate from low speeds.</strong> High torque means the car can accelerate hard out of slow corners. The hybrid electric motors in F1 deliver torque instantly (unlike combustion engines), which is one reason drivers must manage wheelspin so carefully exiting tight bends.'
+  },
+  'apex': {
+    title: 'Apex',
+    body: '<strong>The innermost point of a corner.</strong> Hitting the apex correctly is the key to fast cornering. Drivers aim to "clip the apex" — getting as close to the inside of the corner as possible. A late apex (clipping near the exit) opens up a wider, faster line. An early apex forces the car wide at exit, scrubbing speed.'
+  },
+  'understeer': {
+    title: 'Understeer',
+    body: '<strong>When the front tyres lose grip and the car pushes wide in a corner.</strong> The car wants to go straight instead of turning. Common cause: going too fast into a corner, or the front tyres overheating. Drivers hate understeer because it\'s unpredictable and slow. Opposite of oversteer.'
+  },
+  'oversteer': {
+    title: 'Oversteer',
+    body: '<strong>When the rear tyres lose grip and the car rotates more than intended.</strong> The rear slides out — creating a dramatic tail-out angle. Some drivers love a small amount of oversteer (it\'s faster), but too much and you spin. Max Verstappen is famous for his ability to control and exploit oversteer.'
+  },
+  'floor': {
+    title: 'The Floor',
+    body: '<strong>The flat underside of the car — a critical aerodynamic surface.</strong> The floor generates a huge proportion of the car\'s downforce. In 2022–2025, floors had shaped Venturi tunnels that created ground effect. In 2026, floors are flatter with a larger rear diffuser. Teams spend enormous resources developing their floors.'
+  },
+  'diffuser': {
+    title: 'Diffuser',
+    body: '<strong>A shaped component at the rear underside of the car that accelerates airflow.</strong> Air flowing under the car speeds up through the diffuser as it exits. Faster air = lower pressure = the car gets sucked toward the road. The diffuser is one of the most sensitive and complex aerodynamic components on an F1 car.'
+  },
+  'graining': {
+    title: 'Graining',
+    body: '<strong>Small pieces of rubber tearing off the tyre surface in a rubbery film.</strong> Happens when tyres aren\'t warm enough — the rubber surface shears and rolls into small "grains" instead of bonding with the track. The car becomes very slow and unpredictable. Usually clears after a few laps once the tyre heats up properly.'
+  },
+  'blistering': {
+    title: 'Blistering',
+    body: '<strong>When tyre rubber overheats and bubbles form under the surface.</strong> The opposite problem to graining. Too much heat causes the tyre\'s internal structure to delaminate. Unlike graining (which can recover), blistering is permanent damage. Drivers must manage tyre temperature carefully — not just heat them up, but not overheat them either.'
+  },
+  'quali': {
+    title: 'Qualifying (Quali)',
+    body: '<strong>The session on Saturday that determines the starting grid for Sunday\'s race.</strong> F1 uses a knockout format — Q1, Q2, Q3. The slowest 5 drivers are eliminated each round until Q3, where the top 10 fight for pole position. Drivers do flying laps on fresh soft tyres, trying to set the fastest single lap possible.'
+  },
+  'flying lap': {
+    title: 'Flying Lap',
+    body: '<strong>A timed lap done at maximum effort to set a fast qualifying time.</strong> Before a flying lap, drivers do an "out lap" to warm up their tyres. After the flying lap, they do an "in lap" back to the pits. The entire strategy around when to do your flying lap — traffic, tyre temperature, track improvement — can decide the whole qualifying order.'
+  },
+  'sprint race': {
+    title: 'Sprint Race',
+    body: '<strong>A short race held on Saturdays at certain race weekends.</strong> About 100km (roughly 30% of a full Grand Prix distance). No mandatory pitstop. Points awarded to the top 8 finishers. The sprint grid is determined by a separate qualifying session on Friday. Used at 6 weekends per season.'
+  },
+  'constructors': {
+    title: "Constructors' Championship",
+    body: '<strong>The team title — awarded to the F1 team with the most points across both their drivers.</strong> Points from both cars are added together. So if Leclerc finishes P1 (25 pts) and Hamilton P3 (15 pts) in the same race, Ferrari gets 25 and Mercedes gets 15 for the Constructors\' standings. Teams can win this even if neither driver wins the Drivers\' Championship.'
+  },
+  'wdc': {
+    title: "WDC — World Drivers' Championship",
+    body: '<strong>The individual title — awarded to the driver with the most points at the end of the season.</strong> The most prestigious title in motorsport. 26 points for a win (25 + 1 bonus point for fastest lap if you finish in the top 10). Scoring system runs from 25 down to 1 point for 10th place.'
+  },
+  'formation lap': {
+    title: 'Formation Lap',
+    body: '<strong>The slow lap done before the race starts, where all cars go around the track once before stopping on the grid.</strong> Used to warm up tyres and brakes, and let drivers check their systems. After the formation lap, cars take their grid positions and the five red lights sequence begins the race start procedure.'
+  },
+  'flat spot': {
+    title: 'Flat Spot',
+    body: '<strong>A worn flat section on a tyre caused by locking up the brakes.</strong> When a driver brakes too hard and the wheels stop rotating while the car is still moving, the stationary tyre scrubs along the tarmac and creates a flat section. This causes intense vibration through the car at high speed — sometimes severe enough to force an unplanned pit stop.'
+  },
+  'lift and coast': {
+    title: 'Lift and Coast',
+    body: '<strong>Lifting off the throttle early before a braking zone to save fuel and manage tyres.</strong> Instead of staying flat-out until the last moment and then braking hard, the driver lifts off the throttle slightly early and coasts to the braking point. Feels slow to the driver but saves fuel and reduces brake temperatures.'
+  },
+  'slipstream': {
+    title: 'Slipstream',
+    body: '<strong>The aerodynamic wake behind a fast-moving car that reduces drag for the following car.</strong> The car ahead punches a hole in the air. The car behind sits in the lower-pressure zone, experiencing less drag and therefore going faster for the same throttle position. Used tactically — drivers sometimes deliberately let a rival past to benefit from their slipstream.'
+  },
+  'kerb': {
+    title: 'Kerbs',
+    body: '<strong>The raised, often striped edges at the sides of corners.</strong> Drivers use kerbs to take the geometrically optimal line through corners, cutting across them to take the widest possible arc. Hitting kerbs too hard can damage the car\'s floor or upset the aerodynamics. Track limits rules punish drivers who go too far beyond the kerbs.'
+  },
+  'track limits': {
+    title: 'Track Limits',
+    body: '<strong>The rule that lap times are deleted if a driver goes beyond the white lines at the edge of the track.</strong> If all four wheels cross the white line, the lap time is deleted (in qualifying) or the driver gets a warning/penalty (in the race). Highly controversial — different tracks enforce this differently.'
+  },
+  'mgu-k': {
+    title: 'MGU-K',
+    body: '<strong>Motor Generator Unit — Kinetic. The electric motor connected to the drivetrain.</strong> Harvests energy under braking (regenerative braking) and deploys it as extra power to the rear wheels. In 2026, this is the only MGU remaining — the MGU-H (which recovered exhaust heat) was removed to simplify the power unit and attract new manufacturers.'
+  },
+  'out-lap': {
+    title: 'Out Lap',
+    body: '<strong>The lap driven from the pits to the start/finish line before doing a flying lap.</strong> Used to warm tyres and brakes to the correct operating temperature. Getting the out lap right is critical — a driver who arrives at the start of their flying lap with cold tyres will lose significant time in the first sector.'
+  },
+  'outlap': {
+    title: 'Out Lap',
+    body: '<strong>The lap driven from the pits before a flying lap.</strong> Used to warm tyres and brakes. Critical in qualifying — a cold tyre at the start of the flying lap costs significant time.'
+  }
+};
+
+function openJargon(term) {
+  const def = jargonDefs[term.toLowerCase()];
+  if (!def) return;
+  document.getElementById('jargon-word').textContent = term.toUpperCase();
+  document.getElementById('jargon-title').textContent = def.title;
+  document.getElementById('jargon-body').innerHTML = def.body;
+  document.getElementById('jargon-panel').classList.add('open');
+  document.getElementById('jargon-overlay').classList.add('open');
+}
+
+function closeJargon() {
+  document.getElementById('jargon-panel').classList.remove('open');
+  document.getElementById('jargon-overlay').classList.remove('open');
+}
+
+/* ── CHAPTER NAV ── */
+function goTo(n, total) {
+  document.querySelectorAll('.chapter').forEach((c, i) => c.classList.toggle('active', i === n));
+  buildProgress(n, total);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function buildProgress(active, total) {
+  const el = document.getElementById('progress');
+  if (!el) return;
+  el.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'prog-dot' + (i === active ? ' active' : i < active ? ' done' : '');
+    d.onclick = () => goTo(i, total);
+    el.appendChild(d);
+  }
+}
+
+/* ── QUIZ ── */
+function makeQuiz(correct) {
+  const answered = {};
+  return {
+    answer(q, opt, total) {
+      if (answered[q]) return;
+      answered[q] = true;
+      document.querySelectorAll(`#q${q}-card .quiz-opt`).forEach(o => o.classList.add('disabled'));
+      const isRight = opt === correct[q];
+      document.getElementById(`q${q}-${opt}`).classList.add(isRight ? 'correct' : 'wrong');
+      if (!isRight) document.getElementById(`q${q}-${correct[q]}`).classList.add('correct');
+      document.getElementById(`q${q}-fb-good`).classList.toggle('show', isRight);
+      document.getElementById(`q${q}-fb-bad`).classList.toggle('show', !isRight);
+      const nextQ = q + 1;
+      const nextCard = document.getElementById(`q${nextQ}-card`);
+      if (nextCard) {
+        nextCard.style.opacity = '1';
+        nextCard.style.pointerEvents = 'auto';
+        setTimeout(() => nextCard.scrollIntoView({ behavior: 'smooth', block: 'center' }), 200);
+      }
+      const allDone = Object.keys(answered).length === total;
+      if (allDone) {
+        const btn = document.getElementById('finish-btn');
+        if (btn) btn.disabled = false;
+      }
+    },
+    reset(total) {
+      Object.keys(answered).forEach(k => delete answered[k]);
+      for (let q = 1; q <= total; q++) {
+        document.querySelectorAll(`#q${q}-card .quiz-opt`).forEach(o => o.classList.remove('correct', 'wrong', 'disabled'));
+        const good = document.getElementById(`q${q}-fb-good`);
+        const bad  = document.getElementById(`q${q}-fb-bad`);
+        if (good) good.classList.remove('show');
+        if (bad)  bad.classList.remove('show');
+        if (q > 1) {
+          const card = document.getElementById(`q${q}-card`);
+          if (card) { card.style.opacity = '0.4'; card.style.pointerEvents = 'none'; }
+        }
+      }
+      const btn = document.getElementById('finish-btn');
+      if (btn) btn.disabled = true;
+    }
+  };
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initThemeBtn();
+});
+
+</script>
+<script>
+const TOTAL = 6;
+const quiz = makeQuiz({1:'c', 2:'b', 3:'b'});
+buildProgress(0, TOTAL);
+
+// Points bars
+const pts = [25,18,15,12,10,8,6,4,2,1];
+const container = document.getElementById('pts-bars');
+pts.forEach((p, i) => {
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:6px;';
+  const pos = document.createElement('div');
+  pos.style.cssText = 'font-family:var(--mono);font-size:11px;color:var(--muted2);width:28px;flex-shrink:0;';
+  pos.textContent = 'P' + (i+1);
+  const bar = document.createElement('div');
+  bar.style.cssText = 'flex:1;height:22px;background:var(--card2);border-radius:4px;overflow:hidden;';
+  const fill = document.createElement('div');
+  const pct = (p / 25) * 100;
+  fill.style.cssText = `height:100%;width:${pct}%;background:var(--red);opacity:${0.4+pct/200};border-radius:4px;transition:width 0.6s ease;`;
+  bar.appendChild(fill);
+  const val = document.createElement('div');
+  val.style.cssText = 'font-family:var(--mono);font-size:12px;color:var(--text);min-width:28px;text-align:right;font-weight:700;';
+  val.textContent = p;
+  row.appendChild(pos); row.appendChild(bar); row.appendChild(val);
+  container.appendChild(row);
+});
+</script>
+</body>
+</html>
