@@ -2,7 +2,7 @@
 Why Do They Pit?
 -----------------
 
-[Live](https://tanvi1505.github.io/formula1_fan.edition/)
+[Live](https://f1fanacademyforbeginners.netlify.app/)
 
 (Better Understanding on Pitstops and Tyres for Beginner Formula 1 fans.)
 
